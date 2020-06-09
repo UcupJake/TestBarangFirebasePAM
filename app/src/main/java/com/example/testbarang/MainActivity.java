@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Dilanjutkan pada pertemuan selanjutnya
+                // Untuk pertemuan minggu ini boleh dilanjutkan :)
+                startActivity(LihatBarang.getActIntent(MainActivity.this));
             }
         });
     }

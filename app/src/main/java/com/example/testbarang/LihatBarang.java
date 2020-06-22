@@ -8,7 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +33,8 @@ public class LihatBarang extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Barang> daftarBarang;
 
+    private Button update, delete;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +46,31 @@ public class LihatBarang extends AppCompatActivity {
         rvView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         rvView.setLayoutManager(layoutManager);
+
+        update = (Button) findViewById(R.id.update);
+        delete = (Button) findViewById(R.id.delete);
         /**
          * Inisialisasi dan mengambil Firebase Database Reference
          */
         database = FirebaseDatabase.getInstance().getReference();
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateBarang();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                deleteBarang();
+            }
+        });
+
         /**
          * Mengambil data barang dari Firebase Realtime DB
          */
-
         database.child("Barang").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -60,6 +84,14 @@ public class LihatBarang extends AppCompatActivity {
                      * Dan juga menyimpan primary key pada object Barang
                      * untuk keperluan Edit dan Delete data
                      */
+//                    update.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            updateBarang();
+//                        }
+//                    });
+
+
                     Barang barang = noteDataSnapshot.getValue(Barang.class);
                     barang.setKode(noteDataSnapshot.getKey());
                     /**
@@ -90,7 +122,33 @@ public class LihatBarang extends AppCompatActivity {
         });
     }
 
+    public void updateBarang() {
+        Intent intent = new Intent(this, UpdateBarang.class);
+        startActivity(intent);
+    }
+
+//    public void deleteBarang(Barang barang) {
+//        /**
+//         * Kode ini akan mendelete data di Firebase Realtime DB
+//         * berdasarkan key barang.
+//         * Jika sukses akan memunculkan Toast.
+//         */
+//        if (database!=null) {
+//            database.child("Barang").child(barang.getKode()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void aVoid) {
+//                    Toast.makeText(LihatBarang.this, "Data barang berhasil dihapus",
+//                            Toast.LENGTH_LONG).show();
+//                }
+//            });
+//        }
+//    }
+
     public static Intent getActIntent(Activity activity) {
         return new Intent(activity, LihatBarang.class);
     }
+
+//    public void update(String key,) {
+//
+//    }
 }
